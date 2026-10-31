@@ -24,6 +24,9 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
+    - name: Create missing env file
+      run: touch .env.example
+
     - name: Build Debug APK
       run: ./gradlew assembleDebug
 
