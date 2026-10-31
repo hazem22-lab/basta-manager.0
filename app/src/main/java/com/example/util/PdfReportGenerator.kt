@@ -1,8 +1,8 @@
-    // 5. Individual Customer Statement PDF (كشف حساب زبون تفصيلي مع الأصناف)
+    // 5. Individual Customer Statement PDF (كشف حساب زبون تفصيلي)
     fun generateCustomerStatementPdf(
         context: Context,
         customerSummary: CustomerWithDebtSummary,
-        sales: List<SaleWithItems>,
+        sales: List<Sale>,
         payments: List<DebtPayment>
     ): File {
         val document = PdfDocument()
@@ -11,7 +11,7 @@
         val canvas = page.canvas
 
         val nowStr = SimpleDateFormat("yyyy/MM/dd hh:mm a", Locale("ar")).format(Date())
-        var currentY = drawHeader(canvas, "كشف حساب زبون: ${c.name}", "تفاصيل العمليات والأصناف والدفعات المسددة", nowStr)
+        var currentY = drawHeader(canvas, "كشف حساب زبون: ${c.name}", "تفاصيل العمليات والدفعات المسددة", nowStr)
 
         // Customer Summary Header
         val bgPaint = Paint().apply { isAntiAlias = true; color = COLOR_PRIMARY_LIGHT }
@@ -25,21 +25,13 @@
 
         currentY += 68f
 
-        // Combined chronological ledger (sales with items and payments)
+        // Combined chronological ledger (sales and payments)
         data class LedgerEntry(val timestamp: Long, val type: String, val description: String, val debit: Double, val credit: Double)
 
         val entries = mutableListOf<LedgerEntry>()
-        for (item in sales) {
-            val s = item.sale
-            // استخراج أسماء المنتجات والكميات لتظهر بوضوح في الكشف
-            val itemsDesc = if (item.items.isNotEmpty()) {
-                item.items.joinToString("، ") { "${it.productName}(x${it.quantity})" }
-            } else if (s.notes.isNotBlank()) {
-                s.notes
-            } else {
-                "فاتورة بيع #${s.id}"
-            }
-            entries.add(LedgerEntry(s.saleDate, "شراء بالدين", itemsDesc, s.totalAmount, 0.0))
+        for (s in sales) {
+            val desc = if (s.notes.isNotBlank()) s.notes else "فاتورة بيع #${s.id}"
+            entries.add(LedgerEntry(s.saleDate, "شراء بالدين", desc, s.totalAmount, 0.0))
         }
         for (p in payments) {
             val methodLabel = PaymentMethods.getShortName(p.paymentMethod)
@@ -50,7 +42,7 @@
 
         // Table
         val colWidths = floatArrayOf(80f, 75f, 175f, 65f, 65f, 63f)
-        val headers = arrayOf("التاريخ", "نوع الحركة", "الأصناف / البيان", "مدين (+)", "دائن (-)", "الرصيد")
+        val headers = arrayOf("التاريخ", "نوع الحركة", "البيان / الأصناف", "مدين (+)", "دائن (-)", "الرصيد")
 
         val hPaint = Paint().apply { isAntiAlias = true; color = COLOR_PRIMARY }
         canvas.drawRect(MARGIN_X, currentY, MARGIN_X + CONTENT_WIDTH, currentY + 24f, hPaint)
