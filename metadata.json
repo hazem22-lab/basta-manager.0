@@ -1,0 +1,6 @@
+{
+  "name": "مدير البسطة",
+  "description": "تطبيق متكامل لإدارة مبيعات ومخزون وديون ومصاريف البسطات الصغيرة باللغة العربية مع دعم العمل دون إنترنت وحساب الأرباح بدقة.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
