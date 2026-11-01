@@ -70,6 +70,12 @@ android {
   }
 }
 
+// إنشاء ملف .env.example تلقائياً إذا كان مفقوداً لمنع فشل البناء
+def envExample = file("${rootDir}/.env.example")
+if (!envExample.exists()) {
+    envExample.createNewFile()
+}
+
 // Configure the Secrets Gradle Plugin to use .env and .env.example files
 // to match the convention used in Web projects.
 secrets {
