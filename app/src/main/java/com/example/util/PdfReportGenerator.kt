@@ -1,4 +1,4 @@
-    // 5. Individual Customer Statement PDF (كشف حساب زبون تفصيلي)
+// 5. Individual Customer Statement PDF (كشف حساب زبون تفصيلي)
     fun generateCustomerStatementPdf(
         context: Context,
         customerSummary: CustomerWithDebtSummary,
