@@ -30,12 +30,6 @@ android {
             keyAlias = "upload"
             keyPassword = System.getenv("KEY_PASSWORD")
         }
-        create("debugConfig") {
-            storeFile = file("${rootDir}/debug.keystore")
-            storePassword = "android"
-            keyAlias = "androiddebugkey"
-            keyPassword = "android"
-        }
     }
 
     buildTypes {
@@ -46,7 +40,8 @@ android {
             signingConfig = signingConfigs.getByName("release")
         }
         debug {
-            signingConfig = signingConfigs.getByName("debugConfig")
+            // استخدام التوقيع الافتراضي التلقائي لعدم الحاجة لملف debug.keystore
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -64,7 +59,7 @@ android {
     }
 }
 
-// إنشاء ملف .env.example تلقائياً بلغة Kotlin لتجنب خطأ التجميع
+// إنشاء ملف .env.example تلقائياً لتجنب خطأ التجميع
 val envExample = file("$rootDir/.env.example")
 if (!envExample.exists()) {
     envExample.createNewFile()
